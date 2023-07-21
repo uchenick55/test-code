@@ -5,7 +5,7 @@
 // Укажите правильные типы.
 // По возможности пришлите Ваш вариант в https://codesandbox.io
 
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 const URL = "https://jsonplaceholder.typicode.com/users";
 
@@ -30,7 +30,7 @@ interface IButtonProps {
   onClick: any;
 }
 
-function Button({ onClick }: IButtonProps): JSX.Element {
+const Button: React.FC<IButtonProps> = ({onClick}) =>  {
   return (
       <button type="button" onClick={onClick}>
         get random user
@@ -38,11 +38,11 @@ function Button({ onClick }: IButtonProps): JSX.Element {
   );
 }
 
-interface IUserInfoProps {
+/*type UserInfoPropsType = {
   user: User;
-}
+}*/
 
-function UserInfo({ user }: IUserInfoProps): JSX.Element {
+/*const UserInfo:React.FC<UserInfoPropsType> = ({ user }) => {
   return (
       <table>
         <thead>
@@ -59,30 +59,27 @@ function UserInfo({ user }: IUserInfoProps): JSX.Element {
         </tbody>
       </table>
   );
-}
+}*/
 
-function App(): JSX.Element {
-  const [item, setItem] = useState<Record<number, User>>(null);
+const App: React.FC = () => {
+  const [item, setItem] = useState<User | null> (null);
+  console.log(item)
 
-  const receiveRandomUser = async () => {
-    const id = Math.floor(Math.random() * (10 - 1)) + 1;
-    const response = await fetch(`${URL}/${id}`);
-    const _user = (await response.json()) as User;
-    setItem(_user);
+  const receiveRandomUser = async () => { // асинхронная функция получения случайного пользователя
+    const id = Math.floor(Math.random() * (10 - 1)) + 1; // случайное число от 1 до 10
+    const response = await fetch(`${URL}/${id}`); //получить ответ от сервера по пользователю со случайным номером
+    const _user: User  = await response.json(); // преобразовать ответ в json формат
+    setItem(_user); // записать ответ в локальный стейт
   };
 
-  const handleButtonClick = (
-      event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    event.stopPropagation();
-    receiveRandomUser();
+  const handleButtonClick = () => { // обработчик нажатия на кнопку
+    receiveRandomUser(); // запустить получение случайного пользователя и запись в локальный стейт
   };
-
   return (
       <div>
         <header>Get a random user</header>
-        <Button onClick={handleButtonClick} />
-        <UserInfo user={item} />
+        <Button onClick={handleButtonClick} /> {/*кнопка с обработчиком на получение случайного пользователя и запись в стейт*/}
+       {/* <UserInfo user={item} />*/}
       </div>
   );
 }
